@@ -12,8 +12,30 @@ class ChatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ChatGPT Chat'),
         backgroundColor: Colors.blue,
+        // 앱바 중앙에 챗봇 선택 위젯 배치
+        title: Consumer<ChatProvider>(
+          builder: (context, chatProvider, child) {
+            return InkWell(
+              onTap: () => _showBotSelectionDialog(context),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    chatProvider.currentBot.name,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.arrow_drop_down, size: 24),
+                ],
+              ),
+            );
+          },
+        ),
+        centerTitle: true,
         actions: [
           // 새 채팅방 생성 버튼
           IconButton(
@@ -28,8 +50,6 @@ class ChatScreen extends StatelessWidget {
       drawer: const _ChatDrawer(),
       body: Column(
         children: [
-          // 상단 챗봇 선택 영역
-          _buildBotSelector(context),
           // 채팅 메시지 목록
           Expanded(
             child: Consumer<ChatProvider>(
@@ -50,48 +70,6 @@ class ChatScreen extends StatelessWidget {
           const _MessageInput(),
         ],
       ),
-    );
-  }
-
-  /// 상단 챗봇 선택 영역 위젯
-  Widget _buildBotSelector(BuildContext context) {
-    return Consumer<ChatProvider>(
-      builder: (context, chatProvider, child) {
-        return Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 1,
-                blurRadius: 3,
-                offset: const Offset(0, 1),
-              ),
-            ],
-          ),
-          child: InkWell(
-            onTap: () => _showBotSelectionDialog(context),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    chatProvider.currentBot.name,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  const Icon(Icons.arrow_drop_down),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 
