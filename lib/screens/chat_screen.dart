@@ -4,6 +4,7 @@ import '../providers/chat_provider.dart';
 import '../models/chat_message.dart';
 import '../models/chat_bot.dart';
 
+/// 메인 채팅 화면 위젯
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
 
@@ -14,6 +15,7 @@ class ChatScreen extends StatelessWidget {
         title: const Text('ChatGPT Chat'),
         backgroundColor: Colors.blue,
         actions: [
+          // 새 채팅방 생성 버튼
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
@@ -22,10 +24,13 @@ class ChatScreen extends StatelessWidget {
           ),
         ],
       ),
+      // 좌측 메뉴 (채팅방 목록)
       drawer: const _ChatDrawer(),
       body: Column(
         children: [
+          // 상단 챗봇 선택 영역
           _buildBotSelector(context),
+          // 채팅 메시지 목록
           Expanded(
             child: Consumer<ChatProvider>(
               builder: (context, chatProvider, child) {
@@ -41,12 +46,14 @@ class ChatScreen extends StatelessWidget {
               },
             ),
           ),
+          // 하단 메시지 입력 영역
           const _MessageInput(),
         ],
       ),
     );
   }
 
+  /// 상단 챗봇 선택 영역 위젯
   Widget _buildBotSelector(BuildContext context) {
     return Consumer<ChatProvider>(
       builder: (context, chatProvider, child) {
@@ -88,6 +95,7 @@ class ChatScreen extends StatelessWidget {
     );
   }
 
+  /// 챗봇 선택 다이얼로그 표시
   void _showBotSelectionDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -116,13 +124,16 @@ class ChatScreen extends StatelessWidget {
     );
   }
 
+  /// 채팅 메시지 버블 위젯
   Widget _buildMessageBubble(ChatMessage message) {
     return Align(
+      // 사용자/봇 메시지에 따라 정렬 위치 변경
       alignment: message.isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
+          // 사용자/봇 메시지에 따라 색상 변경
           color: message.isUser ? Colors.blue : Colors.grey[300],
           borderRadius: BorderRadius.circular(12),
         ),
@@ -136,6 +147,7 @@ class ChatScreen extends StatelessWidget {
   }
 }
 
+/// 좌측 메뉴 (채팅방 목록) 위젯
 class _ChatDrawer extends StatelessWidget {
   const _ChatDrawer();
 
@@ -144,6 +156,7 @@ class _ChatDrawer extends StatelessWidget {
     return Drawer(
       child: Consumer<ChatProvider>(
         builder: (context, chatProvider, child) {
+          // 현재 선택된 챗봇의 채팅방만 필터링
           final rooms =
               chatProvider.chatRooms
                   .where((room) => room.bot.id == chatProvider.currentBot.id)
@@ -151,6 +164,7 @@ class _ChatDrawer extends StatelessWidget {
 
           return Column(
             children: [
+              // 드로어 헤더 (현재 챗봇 이름 표시)
               DrawerHeader(
                 decoration: BoxDecoration(color: Colors.blue),
                 child: Center(
@@ -160,6 +174,7 @@ class _ChatDrawer extends StatelessWidget {
                   ),
                 ),
               ),
+              // 채팅방 목록
               Expanded(
                 child: ListView.builder(
                   itemCount: rooms.length,
@@ -193,6 +208,7 @@ class _ChatDrawer extends StatelessWidget {
   }
 }
 
+/// 하단 메시지 입력 영역 위젯
 class _MessageInput extends StatefulWidget {
   const _MessageInput();
 
@@ -209,6 +225,7 @@ class _MessageInputState extends State<_MessageInput> {
     super.dispose();
   }
 
+  /// 메시지 전송 처리
   void _sendMessage() {
     final message = _controller.text;
     if (message.trim().isNotEmpty) {
@@ -234,6 +251,7 @@ class _MessageInputState extends State<_MessageInput> {
       ),
       child: Row(
         children: [
+          // 메시지 입력 필드
           Expanded(
             child: TextField(
               controller: _controller,
@@ -251,6 +269,7 @@ class _MessageInputState extends State<_MessageInput> {
             ),
           ),
           const SizedBox(width: 8),
+          // 전송 버튼
           Consumer<ChatProvider>(
             builder: (context, chatProvider, child) {
               return IconButton(
