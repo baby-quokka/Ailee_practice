@@ -138,7 +138,8 @@ class _ChatDrawer extends StatelessWidget {
           final rooms =
               chatProvider.chatRooms
                   .where((room) => room.bot.id == chatProvider.currentBot.id)
-                  .toList();
+                  .toList()
+                ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt)); // 최신순 정렬
 
           return Column(
             children: [
