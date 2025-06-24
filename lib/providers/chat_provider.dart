@@ -129,4 +129,25 @@ class ChatProvider with ChangeNotifier {
       _chatRooms[index] = updatedRoom;
     }
   }
+
+  /// 특정 주제로 대화를 시작하는 메서드
+  Future<void> startTopicConversation(ChatBot bot, String topic, String initialMessage) async {
+    // 챗봇 변경
+    setCurrentBot(bot);
+    
+    // 새 채팅방 생성
+    _currentRoom = ChatRoom(
+      id: const Uuid().v4(),
+      title: topic,
+      bot: bot,
+      messages: [],
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    _chatRooms.add(_currentRoom!);
+    notifyListeners();
+
+    // 즉시 초기 메시지 전송
+    await sendMessage(initialMessage);
+  }
 }
